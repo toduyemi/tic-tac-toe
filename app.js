@@ -5,11 +5,18 @@ function Gameboard() {
         [null, null, null]
     ];
 
-    gameboard.forEach(row => {
-        row.forEach(square => {
-            square = SquareObject();
-        });
-    });
+    const rows = 3, col = 3;
+
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < col; j++) {
+            gameboard[i][j] = SquareObject();
+        }
+    }
+    // gameboard.forEach(row => {
+    //     row.forEach(square => {
+    //         square = SquareObject();
+    //     });
+    // });
 
     function SquareObject() {
         const square = {};
@@ -17,7 +24,7 @@ function Gameboard() {
         square.tokenCheck = false;
 
         const addToken = token => {
-            if (!square.tokenCheck) {
+            if (square.tokenCheck) {
                 return null;
             }
 
@@ -30,8 +37,9 @@ function Gameboard() {
         return { addToken, getValue };
     }
 
-    const dropToken = (row, col, player) => {
-        if (!gameboard[row][col].addToken(player.token)) {
+    const dropToken = (row, col, token) => {
+
+        if (!gameboard[row][col].addToken(token)) {
             return null;
         }
     }
@@ -39,14 +47,15 @@ function Gameboard() {
     const getBoard = () => gameboard;
 
     const printBoard = () => {
-        currentBoard = gameboard.map(row => row.map(square => SquareObject.getValue()));
+        const currentBoard = gameboard.map(row => row.map(square => square.getValue()));
+        console.log(currentBoard);
     }
 
 
     return { getBoard, printBoard, dropToken };
 };
 
-const Player = (name, token) => {
+function Player(name, token) {
     const player = {};
     player.name = name;
     player.token = token;
@@ -56,16 +65,16 @@ const Player = (name, token) => {
 }
 
 
-const GameController = (function () {
-    const PlayerOne = Player("PlayerOne", "x");
-    const PlayerTwo = Player("PlayerTwo", "o");
+function GameController() {
+    let PlayerOne = Player("PlayerOne", 1);
+    let PlayerTwo = Player("PlayerTwo", 2);
 
-    let activePlayer;
+    let activePlayer = PlayerOne;
 
     const game = Gameboard();
 
     const switchPlayer = () => {
-        activePlayer = activePlayer !== PlayerTwo ? PlayerOne : PlayerTwo;
+        activePlayer = (activePlayer !== PlayerOne) ? PlayerOne : PlayerTwo;
     }
 
     const getActivePlayer = () => activePlayer;
@@ -76,7 +85,7 @@ const GameController = (function () {
     }
 
     const playRound = (row, col) => {
-        game.dropToken(row, col, activePlayer.token);
+        game.dropToken(row, col, getActivePlayer().token);
         console.log(`Dropping ${getActivePlayer().token} onto square ${row}${col}.`)
 
         //win logic here
@@ -85,6 +94,8 @@ const GameController = (function () {
         printNewRound();
     }
 
-    printNewRound;
+    printNewRound();
     return { playRound, getActivePlayer };
-})();
+};
+
+const play = GameController();
