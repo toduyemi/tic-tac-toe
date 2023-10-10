@@ -212,14 +212,15 @@ const domController = () => {
 
     }
 
-    gameTileDivs.forEach(square => {
-        square.addEventListener('click', (e) => {
-            currentCol = +e.target.getAttribute('data-index-x');
-            currentRow = +e.target.getAttribute('data-index-y');
-            dropHTMLToken(e.target);
-            play.playRound(currentCol, currentRow);
+    function clickBoardClickHandler(e) {
+        currentCol = +e.target.getAttribute('data-index-x');
+        currentRow = +e.target.getAttribute('data-index-y');
+        dropHTMLToken(e.target);
+        play.playRound(currentCol, currentRow);
+    }
 
-        }, { once: true }) //extra insurance to prevent playing on same tile
+    gameTileDivs.forEach(square => {
+        square.addEventListener('click', clickBoardClickHandler, { once: true }); //extra insurance to prevent playing on same tile
     })
 
     return { updateBoard, play }
