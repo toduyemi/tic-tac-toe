@@ -48,13 +48,13 @@ function Gameboard() {
         }
     }
 
-    const getBoard = () => gameboard;
+    const getBoard = () => gameboard.map(row => row.map(square => square.getValue()));
 
-    const printBoard = () => {
-        const currentBoard = gameboard.map(row => row.map(square => square.getValue()));
-        console.log(currentBoard);
-        return currentBoard;
-    }
+    // const printBoard = () => {
+    //     const currentBoard = gameboard.map(row => row.map(square => square.getValue()));
+    //     console.log(currentBoard);
+    //     return currentBoard;
+    // }
 
     const resetBoard = () => {
         for (let i = 0; i < rows; i++) {
@@ -65,7 +65,7 @@ function Gameboard() {
     }
 
 
-    return { getBoard, printBoard, dropToken, resetBoard };
+    return { getBoard, /*printBoard,*/ dropToken, resetBoard };
 };
 
 const xToken = `<svg fill="#000000" height="250px" width="250px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -105,7 +105,7 @@ function GameController() {
     const getActivePlayer = () => activePlayer;
 
     const printNewRound = () => {
-        game.printBoard();
+        // game.printBoard();
         console.log(`${getActivePlayer().name}'s turn.`)
     }
 
@@ -122,7 +122,7 @@ function GameController() {
 
             else {
                 switchPlayer();
-                // printNewRound();
+                printNewRound();
             }
         }
 
@@ -130,9 +130,9 @@ function GameController() {
 
     const checkWin = (token) => {
 
-        const currentBoard = game.printBoard();
+        const currentBoard = game.getBoard();
         for (let i = 0; i < 3; i++) {
-            console.log(currentBoard[i][0])
+
             if ((currentBoard[i][0] == token) &&
                 (currentBoard[i][1] == token) &&
                 (currentBoard[i][2] == token)) {
@@ -182,6 +182,7 @@ const domController = () => {
     const play = GameController();
 
     updateBoard();
+    const gameTileDivs = document.querySelectorAll('.grid-square');
 
     function updateBoard() {
         for (let i = 0; i < 3; i++) {
@@ -211,13 +212,16 @@ const domController = () => {
 
     }
 
-    gameBoardDiv.addEventListener('click', (e) => {
-        currentCol = +e.target.getAttribute('data-index-x');
-        currentRow = +e.target.getAttribute('data-index-y');
-        dropHTMLToken(e.target);
-        play.playRound(currentCol, currentRow);
+    gameTileDivs.forEach(square => {
+        square.addEventListener('click', (e) => {
+            currentCol = +e.target.getAttribute('data-index-x');
+            currentRow = +e.target.getAttribute('data-index-y');
+            dropHTMLToken(e.target);
+            play.playRound(currentCol, currentRow);
 
+        }, { once: true }) //extra insurance to prevent playing on same tile
     })
+
     return { updateBoard, play }
 }
 
