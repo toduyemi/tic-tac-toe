@@ -1,3 +1,168 @@
+(function StartState() {
+
+    const startState = {
+        players: [],
+
+        init: function () {
+            this.cacheDom();
+            this.createHtmlElements();
+            this.createDom();
+            this.bindEvents();
+        },
+
+        cacheDom: function () {
+            this.domBody = document.querySelector('body');
+        },
+
+        createHtmlElements: function () {
+            this.startScreenDiv = document.createElement('div');
+            this.headersDiv = document.createElement('div');
+
+            this.vsCtr = document.createElement('div');
+
+            this.playerOneCtr = document.createElement('div');
+            this.playerOneTitle = document.createElement('div');
+            this.playerOneIcon = document.createElement('div');
+            this.playerOneInput = document.createElement('input');
+
+            this.playerTwoCtr = document.createElement('div');
+            this.playerTwoTitle = document.createElement('div');
+            this.playerTwoIcon = document.createElement('div');
+            this.playerTwoInput = document.createElement('input');
+
+            this.startGameBtn = document.createElement('button');
+
+            this.startScreenDiv.classList.add('state-1');
+            this.playerOneCtr.classList.add('playerCardCtr');
+            this.playerOneTitle.classList.add('playerCardTitle');
+            this.playerOneIcon.classList.add('playerCardIcon');
+            this.playerOneInput.classList.add('playerCardInput');
+            this.playerTwoCtr.classList.add('playerCardCtr');
+            this.playerTwoTitle.classList.add('playerCardTitle');
+            this.playerTwoIcon.classList.add('playerCardIcon');
+            this.playerTwoInput.classList.add('playerCardInput');
+
+            this.playerOneInput.setAttribute('required');
+            this.playerTwoInput.setAttribute('required');
+
+        },
+
+        createDom: function () {
+            this.playerTwoCtr.appendChild(this.playerTwoTitle);
+            this.playerTwoCtr.appendChild(this.playerTwoIcon);
+            this.playerTwoCtr.appendChild(this.playerTwoInput);
+
+            this.playerOneCtr.appendChild(this.playerOneTitle);
+            this.playerOneCtr.appendChild(this.playerOneIcon);
+            this.playerOneCtr.appendChild(this.playerOneInput);
+
+            this.headersDiv.appendChild(this.playerOneCtr);
+            this.headersDiv.appendChild(this.vsCtr);
+            this.headersDiv.appendChild(this.playerTwoCtr);
+
+            this.startScreenDiv.appendChild(this.headersDiv);
+            this.startScreenDiv.appendChild(this.startGameBtn);
+
+            this.domBody.appendChild(this.domBody);
+        },
+
+        bindEvents: function () {
+            this.startGame.addEventListener('click', this.startGame.bind(this))
+        },
+
+        startGame: function () {
+            this.players.push(this.playerOneInput.value);
+            this.players.push(this.playerTwoInput.value);
+
+            GameState(this.players[0], this.players[1]);
+        }
+    };
+
+    startState.init();
+
+})();
+
+function GameState(playerOneName, playerTwoName) {
+    const gameState = {
+        play: GameController(playerOneName, playerTwoName),
+
+        cacheDom: function () {
+            this.domBody = document.querySelector('body');
+        },
+
+        newGameHandler: function () {
+            this.domBody.textContent = '';
+            this.createHtmlElements();
+            this.createDom();
+            this.bindEvents();
+
+            this.play.resetGame();
+            GameController();
+        },
+
+        createHtmlElements: function () {
+            this.appDiv = document.createElement('div');
+            this.gameBoardDiv = document.createElement('div');
+            this.playerOneName = document.createElement('div');
+            this.playerTwoName = document.createElement('div');
+
+            this.gameBoardDiv.classList.add('.board-container');
+            createBoard();
+        },
+
+        createDom: function () {
+            this.appDiv.appendChild(this.playerOneName);
+            this.appDiv.appendChild(this.gameBoardDiv);
+            this.appDiv.appendChild(this.playerTwoName);
+
+            this.gameBoardDiv.appendChild(this.appDiv);
+            this.domBody.appendChild(this.appDiv)
+        },
+
+        createBoard: function () {
+            for (let i = 0; i < 3; i++) {
+                const gridRow = document.createElement('div');
+
+                gridRow.classList.add('grid-row');
+                this.gameBoardDiv.appendChild(gridRow);
+
+                for (let j = 0; j < 3; j++) {
+                    const gridSquare = document.createElement('div')
+                    gridSquare.classList.add('grid-square');
+
+                    gridSquare.setAttribute('data-index-x', `${i}`);
+                    gridSquare.setAttribute('data-index-y', `${j}`);
+                    gridRow.appendChild(gridSquare);
+                }
+            }
+        },
+
+        bindEvents: function () {
+            const gameTileDivs = document.querySelectorAll('.grid-square');
+            gameTileDivs.forEach(square => {
+                square.addEventListener('click', this.clickBoardClickHandler, { once: true }); //extra insurance to prevent playing on same tile
+            });
+        },
+
+        dropHTMLToken: function (target) {
+
+            const svgContainer = document.createElement('div');
+
+            svgContainer.innerHTML = this.play.getActivePlayer().htmlToken;
+
+            target.appendChild(svgContainer);
+        },
+
+        clickBoardClickHandler: function (e) {
+            currentCol = +e.target.getAttribute('data-index-x');
+            currentRow = +e.target.getAttribute('data-index-y');
+            dropHTMLToken(e.target);
+            this.play.playRound(currentCol, currentRow);
+        }
+    }
+
+}
+
 function Gameboard() {
     const gameboard = [
         [null, null, null],
@@ -12,11 +177,6 @@ function Gameboard() {
             gameboard[i][j] = SquareObject();
         }
     }
-    // gameboard.forEach(row => {
-    //     row.forEach(square => {
-    //         square = SquareObject();
-    //     });
-    // });
 
     function SquareObject() {
         const square = {};
@@ -50,12 +210,6 @@ function Gameboard() {
 
     const getBoard = () => gameboard.map(row => row.map(square => square.getValue()));
 
-    // const printBoard = () => {
-    //     const currentBoard = gameboard.map(row => row.map(square => square.getValue()));
-    //     console.log(currentBoard);
-    //     return currentBoard;
-    // }
-
     const resetBoard = () => {
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < col; j++) {
@@ -65,7 +219,7 @@ function Gameboard() {
     }
 
 
-    return { getBoard, /*printBoard,*/ dropToken, resetBoard };
+    return { getBoard, dropToken, resetBoard };
 };
 
 const xToken = `<svg fill="#000000" height="250px" width="250px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -90,22 +244,22 @@ function Player(name, token, htmlToken) {
 }
 
 
-function GameController() {
-    let PlayerOne = Player("PlayerOne", 1, xToken);
-    let PlayerTwo = Player("PlayerTwo", 2, oToken);
+function GameController(playerOneName, playerTwoName) {
+    let PlayerOne = Player(playerOneName, 1, xToken);
+    let PlayerTwo = Player(playerTwoName, 2, oToken);
 
     let activePlayer = PlayerOne;
 
     const game = Gameboard();
+    printNewRound();
 
     const switchPlayer = () => {
         activePlayer = (activePlayer !== PlayerOne) ? PlayerOne : PlayerTwo;
     }
 
-    const getActivePlayer = () => activePlayer;
+    function getActivePlayer() { return activePlayer };
 
-    const printNewRound = () => {
-        // game.printBoard();
+    function printNewRound() {
         console.log(`${getActivePlayer().name}'s turn.`)
     }
 
@@ -161,69 +315,34 @@ function GameController() {
         return false;
     }
 
-    const resetGame = () => {
+    function resetGame() {
         console.log('Time for a new game!')
         game.resetBoard();
     }
-    printNewRound();
+
 
 
     return {
         playRound: playRound,
         getActivePlayer: getActivePlayer,
-        getBoard: game.getBoard,
         resetGame: resetGame
     };
 };
 
 
-const gameBoardDiv = document.querySelector('.board-container');
-const domController = () => {
-    const play = GameController();
 
-    updateBoard();
-    const gameTileDivs = document.querySelectorAll('.grid-square');
+function DomController() {
 
-    function updateBoard() {
-        for (let i = 0; i < 3; i++) {
-            const gridRow = document.createElement('div');
-            gridRow.classList.add('grid-row');
-            gameBoardDiv.appendChild(gridRow);
 
-            for (let j = 0; j < 3; j++) {
-                const gridSquare = document.createElement('div')
-                gridSquare.classList.add('grid-square');
 
-                gridSquare.setAttribute('data-index-x', `${i}`);
-                gridSquare.setAttribute('data-index-y', `${j}`);
-                gridRow.appendChild(gridSquare);
-            }
-        }
-    }
 
-    function dropHTMLToken(target) {
 
-        const svgContainer = document.createElement('div');
 
-        svgContainer.innerHTML = play.getActivePlayer().htmlToken;
+    newGameBtn.addEventListener('click', newGameHandler);
 
-        target.appendChild(svgContainer);
-        console.log(target);
 
-    }
 
-    function clickBoardClickHandler(e) {
-        currentCol = +e.target.getAttribute('data-index-x');
-        currentRow = +e.target.getAttribute('data-index-y');
-        dropHTMLToken(e.target);
-        play.playRound(currentCol, currentRow);
-    }
-
-    gameTileDivs.forEach(square => {
-        square.addEventListener('click', clickBoardClickHandler, { once: true }); //extra insurance to prevent playing on same tile
-    })
-
-    return { updateBoard, play }
+    return { createBoard, d }
 }
 
-domController();
+
