@@ -1,103 +1,104 @@
-(function StartState() {
+function StartState() {
+    (() => {
 
-    const startState = {
-        players: [],
+        const startState = {
+            players: [],
 
-        init: function () {
-            this.cacheDom();
-            this.createHtmlElements();
-            this.createDom();
-            this.bindEvents();
-        },
+            init: function () {
+                this.cacheDom();
+                this.domBody.textContent = '';
+                this.createHtmlElements();
+                this.createDom();
+                this.bindEvents();
+            },
 
-        cacheDom: function () {
-            this.domBody = document.querySelector('body');
-        },
+            cacheDom: function () {
+                this.domBody = document.body;
+            },
 
-        createHtmlElements: function () {
-            this.startScreenDiv = document.createElement('div');
-            this.headersDiv = document.createElement('div');
+            createHtmlElements: function () {
+                this.startScreenDiv = document.createElement('div');
+                this.headersDiv = document.createElement('div');
 
-            this.vsCtr = document.createElement('div');
+                this.vsCtr = document.createElement('div');
 
-            this.playerOneCtr = document.createElement('div');
-            this.playerOneTitle = document.createElement('div');
-            this.playerOneIcon = document.createElement('div');
-            this.playerOneInput = document.createElement('input');
+                this.playerOneCtr = document.createElement('div');
+                this.playerOneTitle = document.createElement('div');
+                this.playerOneIcon = document.createElement('div');
+                this.playerOneInput = document.createElement('input');
 
-            this.playerTwoCtr = document.createElement('div');
-            this.playerTwoTitle = document.createElement('div');
-            this.playerTwoIcon = document.createElement('div');
-            this.playerTwoInput = document.createElement('input');
+                this.playerTwoCtr = document.createElement('div');
+                this.playerTwoTitle = document.createElement('div');
+                this.playerTwoIcon = document.createElement('div');
+                this.playerTwoInput = document.createElement('input');
 
-            this.startGameBtn = document.createElement('button');
+                this.startGameBtn = document.createElement('button');
+                this.startGameBtn.textContent = 'Start Game';
 
-            this.startScreenDiv.classList.add('state-1');
-            this.playerOneCtr.classList.add('playerCardCtr');
-            this.playerOneTitle.classList.add('playerCardTitle');
-            this.playerOneIcon.classList.add('playerCardIcon');
-            this.playerOneInput.classList.add('playerCardInput');
-            this.playerTwoCtr.classList.add('playerCardCtr');
-            this.playerTwoTitle.classList.add('playerCardTitle');
-            this.playerTwoIcon.classList.add('playerCardIcon');
-            this.playerTwoInput.classList.add('playerCardInput');
+                this.startScreenDiv.classList.add('state-1');
+                this.playerOneCtr.classList.add('playerCardCtr');
+                this.playerOneTitle.classList.add('playerCardTitle');
+                this.playerOneIcon.classList.add('playerCardIcon');
+                this.playerOneInput.classList.add('playerCardInput');
+                this.playerTwoCtr.classList.add('playerCardCtr');
+                this.playerTwoTitle.classList.add('playerCardTitle');
+                this.playerTwoIcon.classList.add('playerCardIcon');
+                this.playerTwoInput.classList.add('playerCardInput');
 
-            this.playerOneInput.setAttribute('required');
-            this.playerTwoInput.setAttribute('required');
+                this.playerOneInput.required = true;
+                this.playerTwoInput.required = true;
+            },
 
-        },
+            createDom: function () {
+                this.playerTwoCtr.appendChild(this.playerTwoTitle);
+                this.playerTwoCtr.appendChild(this.playerTwoIcon);
+                this.playerTwoCtr.appendChild(this.playerTwoInput);
 
-        createDom: function () {
-            this.playerTwoCtr.appendChild(this.playerTwoTitle);
-            this.playerTwoCtr.appendChild(this.playerTwoIcon);
-            this.playerTwoCtr.appendChild(this.playerTwoInput);
+                this.playerOneCtr.appendChild(this.playerOneTitle);
+                this.playerOneCtr.appendChild(this.playerOneIcon);
+                this.playerOneCtr.appendChild(this.playerOneInput);
 
-            this.playerOneCtr.appendChild(this.playerOneTitle);
-            this.playerOneCtr.appendChild(this.playerOneIcon);
-            this.playerOneCtr.appendChild(this.playerOneInput);
+                this.headersDiv.appendChild(this.playerOneCtr);
+                this.headersDiv.appendChild(this.vsCtr);
+                this.headersDiv.appendChild(this.playerTwoCtr);
 
-            this.headersDiv.appendChild(this.playerOneCtr);
-            this.headersDiv.appendChild(this.vsCtr);
-            this.headersDiv.appendChild(this.playerTwoCtr);
+                this.startScreenDiv.appendChild(this.headersDiv);
+                this.startScreenDiv.appendChild(this.startGameBtn);
 
-            this.startScreenDiv.appendChild(this.headersDiv);
-            this.startScreenDiv.appendChild(this.startGameBtn);
+                this.domBody.appendChild(this.startScreenDiv);
+            },
 
-            this.domBody.appendChild(this.domBody);
-        },
+            bindEvents: function () {
+                this.startGameBtn.addEventListener('click', this.startGame.bind(this))
+            },
 
-        bindEvents: function () {
-            this.startGame.addEventListener('click', this.startGame.bind(this))
-        },
+            startGame: function () {
+                this.players.push(this.playerOneInput.value);
+                this.players.push(this.playerTwoInput.value);
 
-        startGame: function () {
-            this.players.push(this.playerOneInput.value);
-            this.players.push(this.playerTwoInput.value);
+                GameState(this.players[0], this.players[1]);
+            }
+        };
 
-            GameState(this.players[0], this.players[1]);
-        }
-    };
+        startState.init();
 
-    startState.init();
-
-})();
+    })();
+};
 
 function GameState(playerOneName, playerTwoName) {
     const gameState = {
         play: GameController(playerOneName, playerTwoName),
 
         cacheDom: function () {
-            this.domBody = document.querySelector('body');
+            this.domBody = document.body;
         },
 
-        newGameHandler: function () {
+        newGameInit: function () {
+            this.cacheDom();
             this.domBody.textContent = '';
             this.createHtmlElements();
             this.createDom();
             this.bindEvents();
-
-            this.play.resetGame();
-            GameController();
         },
 
         createHtmlElements: function () {
@@ -107,7 +108,7 @@ function GameState(playerOneName, playerTwoName) {
             this.playerTwoName = document.createElement('div');
 
             this.gameBoardDiv.classList.add('.board-container');
-            createBoard();
+            this.createBoard();
         },
 
         createDom: function () {
@@ -115,7 +116,6 @@ function GameState(playerOneName, playerTwoName) {
             this.appDiv.appendChild(this.gameBoardDiv);
             this.appDiv.appendChild(this.playerTwoName);
 
-            this.gameBoardDiv.appendChild(this.appDiv);
             this.domBody.appendChild(this.appDiv)
         },
 
@@ -140,7 +140,7 @@ function GameState(playerOneName, playerTwoName) {
         bindEvents: function () {
             const gameTileDivs = document.querySelectorAll('.grid-square');
             gameTileDivs.forEach(square => {
-                square.addEventListener('click', this.clickBoardClickHandler, { once: true }); //extra insurance to prevent playing on same tile
+                square.addEventListener('click', this.boardClickHandler.bind(this), { once: true }); //extra insurance to prevent playing on same tile
             });
         },
 
@@ -153,14 +153,71 @@ function GameState(playerOneName, playerTwoName) {
             target.appendChild(svgContainer);
         },
 
-        clickBoardClickHandler: function (e) {
+        boardClickHandler: function (e) {
             currentCol = +e.target.getAttribute('data-index-x');
             currentRow = +e.target.getAttribute('data-index-y');
-            dropHTMLToken(e.target);
-            this.play.playRound(currentCol, currentRow);
+            this.dropHTMLToken(e.target);
+
+            if (this.play.playRound(currentCol, currentRow)) {
+                GameEndState(this.play.getActivePlayer().name);
+            }
         }
     }
+    gameState.newGameInit();
 
+    return { newGame: gameState.newGameInit }
+}
+
+function GameEndState(winner) {
+    const gameEndState = {
+
+        cacheDom: function () {
+            this.domBody = document.body;
+        },
+
+        init: function () {
+            this.cacheDom();
+            this.domBody.textContent = '';
+            this.createHtmlElements();
+            this.createDom();
+            this.bindEvents();
+        },
+
+        createHtmlElements: function () {
+            this.appDiv = document.createElement('div');
+            this.winnerDeclarationDiv = document.createElement('div');
+            this.btnCtrDiv = document.createElement('div');
+            this.playAgainBtn = document.createElement('button');
+            this.newPlayersBtn = document.createElement('button');
+
+
+            this.playAgainBtn.classList.add('state-3');
+            this.newPlayersBtn.classList.add('state-3');
+
+            this.winnerDeclarationDiv.textContent = `${winner} reigns supreme!`
+            this.playAgainBtn.textContent = 'Play Again?';
+            this.newPlayersBtn.textContent = 'New Players'
+        },
+
+        createDom: function () {
+
+            this.btnCtrDiv.appendChild(this.playAgainBtn);
+            this.btnCtrDiv.appendChild(this.newPlayersBtn);
+
+            this.appDiv.appendChild(this.winnerDeclarationDiv);
+            this.appDiv.appendChild(this.btnCtrDiv);
+
+            this.domBody.appendChild(this.appDiv);
+        },
+
+        bindEvents: function () {
+            this.playAgainBtn.addEventListener('click', GameState.newGame);
+            this.newPlayersBtn.addEventListener('click', StartState.restart);
+        }
+
+
+    }
+    gameEndState.init();
 }
 
 function Gameboard() {
@@ -265,18 +322,20 @@ function GameController(playerOneName, playerTwoName) {
 
     const playRound = (col, row) => {
 
-        // only switch player or check win if it doesn't return null
+        // only switch player or check win if it doesn't return null, preventing player from placing on an invalid spot
         if (game.dropToken(row, col, getActivePlayer().token)) {
             console.log(`Dropping ${getActivePlayer().token} onto square ${col}, ${row}.`)
 
-            //win logic here
+            //win logic here that returns toggle to go to game end screen if necessary
             if (checkWin(getActivePlayer().token)) {
                 console.log(`${getActivePlayer().name} WINS!`);
+                return true;
             }
 
             else {
                 switchPlayer();
                 printNewRound();
+                return false;
             }
         }
 
@@ -331,18 +390,18 @@ function GameController(playerOneName, playerTwoName) {
 
 
 
-function DomController() {
+// function DomController() {
 
 
 
 
 
 
-    newGameBtn.addEventListener('click', newGameHandler);
+//     newGameBtn.addEventListener('click', newGameHandler);
 
 
 
-    return { createBoard, d }
-}
+//     return { createBoard, d }
+// }
 
 
