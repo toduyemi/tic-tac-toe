@@ -1,3 +1,4 @@
+const appDiv = document.createElement('div');
 function StartState() {
     (() => {
 
@@ -6,7 +7,7 @@ function StartState() {
 
             init: function () {
                 this.cacheDom();
-                this.domBody.textContent = '';
+                appDiv.textContent = '';
                 this.createHtmlElements();
                 this.createDom();
                 this.bindEvents();
@@ -17,33 +18,44 @@ function StartState() {
             },
 
             createHtmlElements: function () {
+
                 this.startScreenDiv = document.createElement('div');
                 this.headersDiv = document.createElement('div');
 
-                this.vsCtr = document.createElement('div');
+                this.vsCtr = document.createElement('h1');
+                this.vsCtr.textContent = 'vs';
 
                 this.playerOneCtr = document.createElement('div');
-                this.playerOneTitle = document.createElement('div');
+                this.playerOneTitle = document.createElement('h1');
                 this.playerOneIcon = document.createElement('div');
                 this.playerOneInput = document.createElement('input');
 
                 this.playerTwoCtr = document.createElement('div');
-                this.playerTwoTitle = document.createElement('div');
+                this.playerTwoTitle = document.createElement('h1');
                 this.playerTwoIcon = document.createElement('div');
                 this.playerTwoInput = document.createElement('input');
 
+                this.playerOneTitle.textContent = 'player one';
+                this.playerTwoTitle.textContent = 'player two';
+
+                this.playerOneInput.setAttribute('form', 'playerForm');
+                this.playerTwoInput.setAttribute('form', 'playerForm');
+
                 this.startGameBtn = document.createElement('button');
+                this.startGameBtn.setAttribute('form', 'playerForm');
                 this.startGameBtn.textContent = 'Start Game';
 
-                this.startScreenDiv.classList.add('state-1');
-                this.playerOneCtr.classList.add('playerCardCtr');
-                this.playerOneTitle.classList.add('playerCardTitle');
-                this.playerOneIcon.classList.add('playerCardIcon');
-                this.playerOneInput.classList.add('playerCardInput');
-                this.playerTwoCtr.classList.add('playerCardCtr');
-                this.playerTwoTitle.classList.add('playerCardTitle');
-                this.playerTwoIcon.classList.add('playerCardIcon');
-                this.playerTwoInput.classList.add('playerCardInput');
+                this.startScreenDiv.classList.add('startScreenCtr', 'state-1');
+                this.headersDiv.classList.add('headersCtr', 'state-1');
+                this.vsCtr.classList.add('vsCtr', 'state-1');
+                this.playerOneCtr.classList.add('playerCardCtr', 'state-1');
+                this.playerOneTitle.classList.add('playerCardTitle', 'state-1');
+                this.playerOneIcon.classList.add('playerCardIcon', 'state-1');
+                this.playerOneInput.classList.add('playerCardInput', 'state-1');
+                this.playerTwoCtr.classList.add('playerCardCtr', 'state-1');
+                this.playerTwoTitle.classList.add('playerCardTitle', 'state-1');
+                this.playerTwoIcon.classList.add('playerCardIcon', 'state-1');
+                this.playerTwoInput.classList.add('playerCardInput', 'state-1');
 
                 this.playerOneInput.required = true;
                 this.playerTwoInput.required = true;
@@ -65,7 +77,9 @@ function StartState() {
                 this.startScreenDiv.appendChild(this.headersDiv);
                 this.startScreenDiv.appendChild(this.startGameBtn);
 
-                this.domBody.appendChild(this.startScreenDiv);
+                appDiv.appendChild(this.startScreenDiv);
+
+                this.domBody.appendChild(appDiv);
             },
 
             bindEvents: function () {
@@ -95,7 +109,7 @@ function GameState(playerOneName, playerTwoName) {
 
         newGameInit: function () {
             this.cacheDom();
-            this.domBody.textContent = '';
+            appDiv.textContent = '';
             this.createHtmlElements();
             this.createDom();
             this.bindEvents();
