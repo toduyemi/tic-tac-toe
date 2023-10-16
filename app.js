@@ -157,18 +157,23 @@ function GameState(playerOneName, playerTwoName) {
             currentCol = +e.target.getAttribute('data-index-x');
             currentRow = +e.target.getAttribute('data-index-y');
             this.dropHTMLToken(e.target);
+            const statusCheck = this.play.playRound(currentCol, currentRow);
 
-            if (this.play.playRound(currentCol, currentRow)) {
-                GameEndState(this.play.getActivePlayer().name);
+            if (statusCheck == 1) {
+                GameEndState('win', this.play.getActivePlayer().name, playerOneName, playerTwoName);
+            }
+
+            else if (statusCheck == 2) {
+                GameEndState('tie', this.play.getActivePlayer().name, playerOneName, playerTwoName);
             }
         }
     }
     gameState.newGameInit();
 
-    return { newGame: gameState.newGameInit }
+    // return { newGame: gameState.newGameInit }
 }
 
-function GameEndState(winner) {
+function GameEndState(status, winner, playerOne, playerTwo) {
     const gameEndState = {
 
         cacheDom: function () {
@@ -178,14 +183,14 @@ function GameEndState(winner) {
         init: function () {
             this.cacheDom();
             this.domBody.textContent = '';
-            this.createHtmlElements();
+            this.createHtmlElements(status);
             this.createDom();
             this.bindEvents();
         },
 
-        createHtmlElements: function () {
+        createHtmlElements: function (status) {
             this.appDiv = document.createElement('div');
-            this.winnerDeclarationDiv = document.createElement('div');
+            this.endDeclarationDiv = document.createElement('div');
             this.btnCtrDiv = document.createElement('div');
             this.playAgainBtn = document.createElement('button');
             this.newPlayersBtn = document.createElement('button');
@@ -194,9 +199,16 @@ function GameEndState(winner) {
             this.playAgainBtn.classList.add('state-3');
             this.newPlayersBtn.classList.add('state-3');
 
-            this.winnerDeclarationDiv.textContent = `${winner} reigns supreme!`
+            if (status == 'win') {
+                this.endDeclarationDiv.textContent = `${winner} reigns supreme!`;
+            }
+
+            else if (status == 'tie') {
+                this.endDeclarationDiv.textContent = `Damn ya'll stalemated! Boo!`;
+            }
+
             this.playAgainBtn.textContent = 'Play Again?';
-            this.newPlayersBtn.textContent = 'New Players'
+            this.newPlayersBtn.textContent = 'New Players';
         },
 
         createDom: function () {
@@ -204,15 +216,17 @@ function GameEndState(winner) {
             this.btnCtrDiv.appendChild(this.playAgainBtn);
             this.btnCtrDiv.appendChild(this.newPlayersBtn);
 
-            this.appDiv.appendChild(this.winnerDeclarationDiv);
+            this.appDiv.appendChild(this.endDeclarationDiv);
             this.appDiv.appendChild(this.btnCtrDiv);
 
             this.domBody.appendChild(this.appDiv);
         },
 
         bindEvents: function () {
-            this.playAgainBtn.addEventListener('click', GameState.newGame);
-            this.newPlayersBtn.addEventListener('click', StartState.restart);
+            this.playAgainBtn.addEventListener('click', () => {
+                GameState(playerOne, playerTwo)
+            });
+            this.newPlayersBtn.addEventListener('click', StartState);
         }
 
 
@@ -250,8 +264,15 @@ function Gameboard() {
             return true;
         }
 
-        const getValue = () => square.value;
+        const getValue = (prop) => {
+            if (prop == 'value') {
+                return square.value;
+            }
 
+            else if (prop == 'tokenCheck') {
+                return square.tokenCheck;
+            }
+        }
         return { addToken, getValue };
     }
 
@@ -265,7 +286,7 @@ function Gameboard() {
         }
     }
 
-    const getBoard = () => gameboard.map(row => row.map(square => square.getValue()));
+    const getBoard = (prop) => gameboard.map(row => row.map(square => square.getValue(prop)));
 
     const resetBoard = () => {
         for (let i = 0; i < rows; i++) {
@@ -329,13 +350,17 @@ function GameController(playerOneName, playerTwoName) {
             //win logic here that returns toggle to go to game end screen if necessary
             if (checkWin(getActivePlayer().token)) {
                 console.log(`${getActivePlayer().name} WINS!`);
-                return true;
+                return 1;
+            }
+
+            else if (checkTie()) {
+                console.log('check hcekc')
+                return 2;
             }
 
             else {
                 switchPlayer();
                 printNewRound();
-                return false;
             }
         }
 
@@ -343,7 +368,7 @@ function GameController(playerOneName, playerTwoName) {
 
     const checkWin = (token) => {
 
-        const currentBoard = game.getBoard();
+        const currentBoard = game.getBoard('value');
         for (let i = 0; i < 3; i++) {
 
             if ((currentBoard[i][0] == token) &&
@@ -374,6 +399,24 @@ function GameController(playerOneName, playerTwoName) {
         return false;
     }
 
+    function checkTie() {
+        const currentBoard = game.getBoard('tokenCheck');
+
+        const rows = 3, col = 3;
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < col; j++) {
+
+                if (!currentBoard[i][j]) {
+                    return false;
+                }
+
+            }
+        }
+
+        return true;
+
+    }
+
     function resetGame() {
         console.log('Time for a new game!')
         game.resetBoard();
@@ -388,6 +431,7 @@ function GameController(playerOneName, playerTwoName) {
     };
 };
 
+StartState();
 
 
 // function DomController() {
