@@ -1,4 +1,3 @@
-const appDiv = document.createElement('div');
 function StartState() {
     (() => {
 
@@ -7,7 +6,7 @@ function StartState() {
 
             init: function () {
                 this.cacheDom();
-                appDiv.textContent = '';
+                this.domBody.textContent = '';
                 this.createHtmlElements();
                 this.createDom();
                 this.bindEvents();
@@ -18,12 +17,12 @@ function StartState() {
             },
 
             createHtmlElements: function () {
-
                 this.startScreenDiv = document.createElement('div');
                 this.headersDiv = document.createElement('div');
 
                 this.vsCtr = document.createElement('h1');
                 this.vsCtr.textContent = 'vs';
+
 
                 this.playerOneCtr = document.createElement('div');
                 this.playerOneTitle = document.createElement('h1');
@@ -38,11 +37,10 @@ function StartState() {
                 this.playerOneTitle.textContent = 'player one';
                 this.playerTwoTitle.textContent = 'player two';
 
-                this.playerOneInput.setAttribute('form', 'playerForm');
-                this.playerTwoInput.setAttribute('form', 'playerForm');
+                this.playerOneTitle.setAttribute('form', 'playerForm');
+                this.playerTwoTitle.setAttribute('form', 'playerForm');
 
                 this.startGameBtn = document.createElement('button');
-                this.startGameBtn.setAttribute('form', 'playerForm');
                 this.startGameBtn.textContent = 'Start Game';
 
                 this.startScreenDiv.classList.add('startScreenCtr', 'state-1');
@@ -62,6 +60,9 @@ function StartState() {
             },
 
             createDom: function () {
+                this.playerOneIcon.innerHTML = xToken;
+                this.playerTwoIcon.innerHTML = oToken;
+
                 this.playerTwoCtr.appendChild(this.playerTwoTitle);
                 this.playerTwoCtr.appendChild(this.playerTwoIcon);
                 this.playerTwoCtr.appendChild(this.playerTwoInput);
@@ -77,9 +78,7 @@ function StartState() {
                 this.startScreenDiv.appendChild(this.headersDiv);
                 this.startScreenDiv.appendChild(this.startGameBtn);
 
-                appDiv.appendChild(this.startScreenDiv);
-
-                this.domBody.appendChild(appDiv);
+                this.domBody.appendChild(this.startScreenDiv);
             },
 
             bindEvents: function () {
@@ -87,10 +86,12 @@ function StartState() {
             },
 
             startGame: function () {
-                this.players.push(this.playerOneInput.value);
-                this.players.push(this.playerTwoInput.value);
+                if (this.playerOneInput.value && this.playerTwoInput.value) {
+                    this.players.push(this.playerOneInput.value);
+                    this.players.push(this.playerTwoInput.value);
 
-                GameState(this.players[0], this.players[1]);
+                    GameState(this.players[0], this.players[1]);
+                }
             }
         };
 
@@ -109,7 +110,7 @@ function GameState(playerOneName, playerTwoName) {
 
         newGameInit: function () {
             this.cacheDom();
-            appDiv.textContent = '';
+            this.domBody.textContent = '';
             this.createHtmlElements();
             this.createDom();
             this.bindEvents();
