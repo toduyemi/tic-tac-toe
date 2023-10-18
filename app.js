@@ -119,17 +119,26 @@ function GameState(playerOneName, playerTwoName) {
         createHtmlElements: function () {
             this.appDiv = document.createElement('div');
             this.gameBoardDiv = document.createElement('div');
-            this.playerOneName = document.createElement('div');
-            this.playerTwoName = document.createElement('div');
+            this.playerOneNameHead = document.createElement('h1');
+            this.playerTwoNameHead = document.createElement('h1');
 
-            this.gameBoardDiv.classList.add('.board-container');
+            this.playerOneIcon = document.createElement('div');
+            this.playerTwoIcon = document.createElement('div');
+
+            this.playerOneNameHead.textContent = playerOneName;
+            this.playerTwoNameHead.textContent = playerTwoName;
+
+            this.appDiv.classList.add('appCtr');
+            this.gameBoardDiv.classList.add('board-container');
             this.createBoard();
         },
 
         createDom: function () {
-            this.appDiv.appendChild(this.playerOneName);
+
+            this.appDiv.appendChild(this.playerOneNameHead);
             this.appDiv.appendChild(this.gameBoardDiv);
-            this.appDiv.appendChild(this.playerTwoName);
+            this.appDiv.appendChild(this.playerTwoNameHead);
+
 
             this.domBody.appendChild(this.appDiv)
         },
@@ -205,21 +214,22 @@ function GameEndState(status, winner, playerOne, playerTwo) {
 
         createHtmlElements: function (status) {
             this.appDiv = document.createElement('div');
-            this.endDeclarationDiv = document.createElement('div');
+            this.endDeclarationHeader = document.createElement('h1');
             this.btnCtrDiv = document.createElement('div');
             this.playAgainBtn = document.createElement('button');
             this.newPlayersBtn = document.createElement('button');
 
-
+            this.appDiv.classList.add('appCtr', 'state-3');
+            this.btnCtrDiv.classList.add('btnCtr');
             this.playAgainBtn.classList.add('state-3');
             this.newPlayersBtn.classList.add('state-3');
 
             if (status == 'win') {
-                this.endDeclarationDiv.textContent = `${winner} reigns supreme!`;
+                this.endDeclarationHeader.textContent = `${winner} reigns supreme!`;
             }
 
             else if (status == 'tie') {
-                this.endDeclarationDiv.textContent = `Damn ya'll stalemated! Boo!`;
+                this.endDeclarationHeader.textContent = `Damn yall stalemated! Boo!`;
             }
 
             this.playAgainBtn.textContent = 'Play Again?';
@@ -231,7 +241,7 @@ function GameEndState(status, winner, playerOne, playerTwo) {
             this.btnCtrDiv.appendChild(this.playAgainBtn);
             this.btnCtrDiv.appendChild(this.newPlayersBtn);
 
-            this.appDiv.appendChild(this.endDeclarationDiv);
+            this.appDiv.appendChild(this.endDeclarationHeader);
             this.appDiv.appendChild(this.btnCtrDiv);
 
             this.domBody.appendChild(this.appDiv);
@@ -315,7 +325,7 @@ function Gameboard() {
     return { getBoard, dropToken, resetBoard };
 };
 
-const xToken = `<svg fill="#000000" height="250px" width="250px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+const xToken = `<svg fill="#000000" height="230px" width="230px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
             viewBox="0 0 460.775 460.775" xml:space="preserve">
             <path d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55
 	c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55
