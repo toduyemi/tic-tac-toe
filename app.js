@@ -114,6 +114,7 @@ function GameState(playerOneName, playerTwoName) {
             this.createHtmlElements();
             this.createDom();
             this.bindEvents();
+            this.switchPlayerHandler();
         },
 
         createHtmlElements: function () {
@@ -190,11 +191,23 @@ function GameState(playerOneName, playerTwoName) {
             else if (statusCheck == 2) {
                 GameEndState('tie', this.play.getActivePlayer().name, playerOneName, playerTwoName);
             }
+            this.switchPlayerHandler();
+        },
+
+        switchPlayerHandler: function () {
+            if (this.play.getActivePlayer().name == playerOneName) {
+                this.playerOneNameHead.classList.add('activePlayer');
+                this.playerTwoNameHead.classList.remove('activePlayer');
+            }
+
+            else {
+                this.playerTwoNameHead.classList.add('activePlayer');
+                this.playerOneNameHead.classList.remove('activePlayer');
+            }
         }
     }
     gameState.newGameInit();
 
-    // return { newGame: gameState.newGameInit }
 }
 
 function GameEndState(status, winner, playerOne, playerTwo) {
@@ -313,16 +326,7 @@ function Gameboard() {
 
     const getBoard = (prop) => gameboard.map(row => row.map(square => square.getValue(prop)));
 
-    const resetBoard = () => {
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < col; j++) {
-                gameboard[i][j] = SquareObject();
-            }
-        }
-    }
-
-
-    return { getBoard, dropToken, resetBoard };
+    return { getBoard, dropToken };
 };
 
 const xToken = `<svg fill="#000000" height="230px" width="230px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -434,25 +438,15 @@ function GameController(playerOneName, playerTwoName) {
                 if (!currentBoard[i][j]) {
                     return false;
                 }
-
             }
         }
 
         return true;
-
     }
-
-    function resetGame() {
-        console.log('Time for a new game!')
-        game.resetBoard();
-    }
-
-
 
     return {
         playRound: playRound,
         getActivePlayer: getActivePlayer,
-        resetGame: resetGame
     };
 };
 
