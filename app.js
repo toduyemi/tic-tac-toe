@@ -37,9 +37,6 @@ function StartState() {
                 this.playerOneTitle.textContent = 'player one';
                 this.playerTwoTitle.textContent = 'player two';
 
-                this.playerOneTitle.setAttribute('form', 'playerForm');
-                this.playerTwoTitle.setAttribute('form', 'playerForm');
-
                 this.startGameBtn = document.createElement('button');
                 this.startGameBtn.textContent = 'Start Game';
 
@@ -358,17 +355,12 @@ function GameController(playerOneName, playerTwoName) {
     let activePlayer = PlayerOne;
 
     const game = Gameboard();
-    printNewRound();
 
     const switchPlayer = () => {
         activePlayer = (activePlayer !== PlayerOne) ? PlayerOne : PlayerTwo;
     }
 
     function getActivePlayer() { return activePlayer };
-
-    function printNewRound() {
-        console.log(`${getActivePlayer().name}'s turn.`)
-    }
 
     const playRound = (col, row) => {
 
@@ -378,18 +370,15 @@ function GameController(playerOneName, playerTwoName) {
 
             //win logic here that returns toggle to go to game end screen if necessary
             if (checkWin(getActivePlayer().token)) {
-                console.log(`${getActivePlayer().name} WINS!`);
                 return 1;
             }
 
             else if (checkTie()) {
-                console.log('check hcekc')
                 return 2;
             }
 
             else {
                 switchPlayer();
-                printNewRound();
             }
         }
 
