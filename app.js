@@ -54,6 +54,9 @@ function StartState() {
 
                 this.playerOneInput.required = true;
                 this.playerTwoInput.required = true;
+
+                this.playerOneInput.setAttribute('placeholder', 'player one name');
+                this.playerTwoInput.setAttribute('placeholder', 'player two name');
             },
 
             createDom: function () {
